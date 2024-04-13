@@ -1,0 +1,12 @@
+Enter a char:Enter your string: 
+Received char: b 
+and str: abrahmrnsbre
+
+--------- SUFFIXES --------- 
+brahmrnsbre
+bre
+
+-------------------- 
+
+suffix(str,c) with str = abrahmrnsbre, c = b
+Found: 2 suffixes 

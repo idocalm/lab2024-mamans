@@ -1,0 +1,9 @@
+Enter first and second numbers (a) (b):
+First number: 80 
+Second number: 80 
+Binary a: 00000000000000000000000001010000
+Binary b: 00000000000000000000000001010000
+Binary result: 00000000000000000000000010100000
+
+my_add(a,b) with decimals a = 80, b = 80
+Decimal result: 160

@@ -1,0 +1,10 @@
+Enter a char:Enter your string: 
+Received char: a 
+and str:  
+
+--------- SUFFIXES --------- 
+
+-------------------- 
+
+suffix(str,c) with str =  , c = a
+Found: 0 suffixes 

@@ -1,0 +1,14 @@
+Enter a char:Enter your string: 
+Received char: s 
+and str: mississippi
+
+--------- SUFFIXES --------- 
+ssissippi
+sissippi
+ssippi
+sippi
+
+-------------------- 
+
+suffix(str,c) with str = mississippi, c = s
+Found: 4 suffixes 

@@ -1,10 +1,10 @@
 #include <stdio.h>
-
+#define BYTES 8 
 void print_in_binary(unsigned int number)
 {
   /* Loop through all bits in the system. */
   int bits;
-  for (bits = sizeof(unsigned int) * 8 - 1; bits >= 0; bits--)
+  for (bits = sizeof(unsigned int) * BYTES - 1; bits >= 0; bits--)
   {
     /* Get the matching digit and print it */
     printf("%d", number >> bits & 1);
