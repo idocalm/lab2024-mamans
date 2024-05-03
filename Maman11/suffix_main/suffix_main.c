@@ -1,5 +1,7 @@
-#include "my_suffix.c"
-#define STRING_LENGTH 127
+#include <string.h>
+#include <stdio.h>
+#include "data.h"
+
 
 
 /*
@@ -20,6 +22,7 @@ int main(int argc, char **argv)
   char c; /* a letter that would be entered by the user. */
   unsigned int total; /* the total future suffixes. */
   char str[STRING_LENGTH]; /* a string that would be entered by the user. */
+
 
   /* Get c char from user. */
   printf("Enter a char:");

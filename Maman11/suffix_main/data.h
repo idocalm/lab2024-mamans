@@ -1,0 +1,2 @@
+#define STRING_LENGTH 127
+

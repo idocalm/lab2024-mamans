@@ -1,6 +1,5 @@
 #include <stdio.h>
-#define BYTES 8
-
+#include "data.h"
 /*
 print_in_binary function: this function receives an unsigned number and prints it in binary base.
 The algorithm uses a simple for loop to go through each bit in the system and print the matching digit in binary.
@@ -34,7 +33,7 @@ void print_in_binary(unsigned int number)
 unsigned int my_add(unsigned int a, unsigned int b)
 {
   unsigned int carry = 0; /* The value that needs to be carried each addition. */
-  unsigned int sum = 0; /* For calculating in-loop sum */  
+  unsigned int sum = 0; /* For calculating in-loop sum */
 
   /* Print arguments a and b in binary base */
   printf("Binary a: ");
