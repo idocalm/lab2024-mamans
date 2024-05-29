@@ -20,7 +20,6 @@ void read_set(set* s , int *arr) {
     i++;
   }
 
-
 }
 
 void print_set(set* s) {
@@ -51,4 +50,80 @@ void print_set(set* s) {
       printf("\n-- END OF PRINTOUT --\n");
 
   }
+}
+
+void union_set(set* a, set* b, set* c) {
+    int i;
+
+    i = 0;
+
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> values[i] = a -> values[i] | b -> values[i];
+    }
+
+    c -> size = 0;
+    i = 0;
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> size += count_bits(c -> values[i]);
+    }
+}
+
+void intersect_set(set* a, set* b, set* c) {
+    int i;
+
+    i = 0;
+
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> values[i] = a -> values[i] & b -> values[i];
+    }
+
+    c -> size = 0;
+    i = 0;
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> size += count_bits(c -> values[i]);
+    }
+}
+
+void sub_set(set* a, set* b, set* c) {
+    int i;
+
+    i = 0;
+
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> values[i] = a -> values[i] & ~(b -> values[i]);
+    }
+
+    c -> size = 0;
+    i = 0;
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> size += count_bits(c -> values[i]);
+    }
+}
+
+void symdiff_set(set* a, set* b, set* c) {
+    int i;
+
+    i = 0;
+
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> values[i] = a -> values[i] ^ b -> values[i];
+    }
+
+    c -> size = 0;
+    i = 0;
+    for (; i < ARRAY_SIZE; i++)
+    {
+        c -> size += count_bits(c -> values[i]);
+    }
+}
+
+void stop() {
+    exit(0);
 }
