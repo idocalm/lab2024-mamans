@@ -1,4 +1,6 @@
-myset: set.c set.h
+myset: functions.o set.o set.h
 	gcc -ansi -Wall -pedantic set.c myset.c -o myset
-myset.o: myset.c
-	gcc -c -ansi -Wall -pedantic myset.c -o myset.o
+functions.o: functions.c set.h
+	gcc -c -ansi -Wall -pedantic functions.c -o functions.o
+set.o: functions.o set.c set.h
+	gcc -c -ansi -Wall -pedantic set.c -o set.o

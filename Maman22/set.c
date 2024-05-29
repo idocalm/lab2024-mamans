@@ -1,47 +1,54 @@
+#include "functions.c"
+#include <stdio.h>
+#include <stdlib.h>
 
-void read_set(set *s, int *arr) {
-    
-    free(s -> values);
-    s -> values = (int*) malloc(16 * sizeof(int));
-    s -> size = 0;
+void read_set(set* s , int *arr) {
+
+  int i;
+
+  i = 0;
+
+  for (; i < ARRAY_SIZE; i++)
+  {
+    s -> values[i] = 0;
+  }
+
+  s -> size = 0;
+  i = 0;
+  while (i < sizeof(arr) && arr[i] != -1) {
+    set_insert(s, arr[i]);
+    i++;
+  }
 
 
-    int i = 0;
-    int size = 0;
-
-    while (arr[i] != -1) {
-
-        /* get the current element x */
-        int x = arr[i];
-
-        /* check if x is not in the set s */
-        if (s -> values[x / 8] & (1 << (x % 8)) == 0) {
-            /* increment size */
-            s -> values[x / 8] |= 1 << (x % 8);
-            size++;
-        }
-
-        i++;
-    }
-
-    s -> size = size;
 }
 
-void print_set(set *s) {
+void print_set(set* s) {
 
-    if (s -> size == 0) {
-        return printf("The set is empty.\n");
-    }
+  int i;
+  int counter;
 
-    int i = 0;
-    int count = 0;
+  if (s -> size == 0) {
+      printf("The set is empty.\n");
+  } else {
+      i = 0;
 
-    while (count < s -> size) {
-        if (s -> values[i / 8] & (1 << (i % 8)) != 0) {
-            printf("%d ", i);
-            count++;
+      printf("-- SET PRINTOUT --\n");
+
+      for (; i < ARRAY_SIZE * BITS_PER_INT; i++)
+      {
+
+        if (set_contains(s, i)) {
+          if (counter % ARRAY_SIZE == 0)
+          {
+            printf("\n");
+          }
+          counter++;
+          printf("%d ", i);
         }
+      }
 
-        i++;
-    }
+      printf("\n-- END OF PRINTOUT --\n");
+
+  }
 }
