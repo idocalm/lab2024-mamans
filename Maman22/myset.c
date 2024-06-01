@@ -171,7 +171,6 @@ int* validate_read_set(char *str) {
 
     if (seen_ending) {
         /* Check there are no junk values */
-        printf("%c", *str);
         while (*str != '\0') {
             if (!isspace(*str)) {
                 printf("[Error] Junk values after -1\n");
@@ -278,15 +277,15 @@ int main(int argc, char *argv[]) {
             int* setMembers = validate_read_set(str);
 
             if (setMembers != NULL) {
-              /*
+                int i = 0;
                 read_set(selectedSet, setMembers);
-                free(setMembers);
-                */
             }
 
-        }
+            free(setMembers);
+        } else if (strncmp(str, "print_set", strlen("print_set")) == 0) {
 
-        free(str);
+            print_set(&SETA);
+        }
 
     }
     return 0;

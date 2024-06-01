@@ -7,7 +7,6 @@
 void read_set(set* s , int* values) {
 
   int i;
-  int num;
 
   i = 0;
 
