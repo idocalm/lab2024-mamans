@@ -4,10 +4,9 @@
 #include <string.h>
 
 
-void read_set(set* s , char* values) {
+void read_set(set* s , int* values) {
 
   int i;
-  char *token;
   int num;
 
   i = 0;
@@ -19,13 +18,12 @@ void read_set(set* s , char* values) {
 
   s -> size = 0;
 
-  token = strtok(values, " ");
-  while (token != NULL) {
-    num = atoi(token);
-    set_insert(s, num);
-    token = strtok(NULL, " ");
-  }
+  i = 0;
 
+  while (values[i] != -1) {
+    set_insert(s, values[i]);
+    i++;
+  }
 
 }
 

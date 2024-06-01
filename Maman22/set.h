@@ -32,8 +32,8 @@ typedef struct Set set;
     Declarations of function that will be implemented in set.c
 */
 
-/* read_set takes in a set and a string of numbers and sets the set to be the numbers in it */
-void read_set(set* s, char* values);
+/* read_set takes in a set and an array of numbers and sets the set to be the numbers in it */
+void read_set(set* s, int* values);
 
 /* print_set prints the elements of the set in ascending order */
 void print_set(set* s);
