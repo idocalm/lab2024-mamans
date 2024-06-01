@@ -1,10 +1,14 @@
 #include "functions.c"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void read_set(set* s , int *arr) {
+
+void read_set(set* s , char* values) {
 
   int i;
+  char *token;
+  int num;
 
   i = 0;
 
@@ -14,11 +18,14 @@ void read_set(set* s , int *arr) {
   }
 
   s -> size = 0;
-  i = 0;
-  while (i < sizeof(arr) && arr[i] != -1) {
-    set_insert(s, arr[i]);
-    i++;
+
+  token = strtok(values, " ");
+  while (token != NULL) {
+    num = atoi(token);
+    set_insert(s, num);
+    token = strtok(NULL, " ");
   }
+
 
 }
 
@@ -31,6 +38,8 @@ void print_set(set* s) {
       printf("The set is empty.\n");
   } else {
       i = 0;
+
+      printf("-- Set size: %d\n", s -> size);
 
       printf("-- SET PRINTOUT --\n");
 
@@ -125,5 +134,6 @@ void symdiff_set(set* a, set* b, set* c) {
 }
 
 void stop() {
+    printf("Program terminated \n");
     exit(0);
 }

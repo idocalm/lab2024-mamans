@@ -19,6 +19,13 @@ int* partialSums(int original[], int size)
   /* Dynamically allocate memory for the result array. */
   res = (int*) malloc(size * sizeof(int));
 
+  if (res == NULL)
+  {
+    /* Allocation failed for some reason */
+    exit(-1);
+  }
+
+
   /* First element of the array is ALWAYS the same. */
   res[0] = original[0];
 

@@ -17,7 +17,7 @@ int main()
   int size; /* Used to store the user's array length */
   int i;
   int* result; /* A pointer for the result array */
-  int* arr; /* A pointer for the received array */  
+  int* arr; /* A pointer for the received array */
 
   /* Ask the user for the array length */
   printf("Enter the desired size of array: ");
@@ -25,6 +25,12 @@ int main()
 
   /* ALlocate the needed memory dynamically */
   arr = (int*) malloc(size * sizeof(int));
+
+  if (arr == NULL)
+  {
+    /* Allocation failed for some reason */
+    exit(-1);
+  }
 
   /* Ask the user for each element in the array separately */
   printf("Enter each element in the array: \n");

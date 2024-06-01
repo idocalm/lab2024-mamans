@@ -1,0 +1,5 @@
+Enter the desired size of array: Enter each element in the array: 
+Size received is: 1
+Array received is : [ 4 ]
+--------------
+Result received is: [ 4 ]
