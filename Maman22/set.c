@@ -36,7 +36,6 @@ void print_set(set* s) {
   } else {
       i = 0;
 
-      printf("-- Set size: %d\n", s -> size);
 
       printf("-- SET PRINTOUT --\n");
 
@@ -44,7 +43,7 @@ void print_set(set* s) {
       {
 
         if (set_contains(s, i)) {
-          if (counter % ARRAY_SIZE == 0)
+          if (counter % ARRAY_SIZE == 0 && counter != 0)
           {
             printf("\n");
           }

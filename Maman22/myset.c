@@ -40,25 +40,12 @@ char *read_line() {
     }
 }
 
-int skip_spaces(char **str) {
+void skip_spaces(char **str) {
     while (isspace(**str)) {
         (*str)++;
     }
-    return 1;
 }
 
-int is_valid_command(char *str, const char *valid_commands[], int num_commands) {
-    int i = 0;
-
-
-    for (; i < num_commands; i++) {
-        if (strncmp(str, valid_commands[i], strlen(valid_commands[i])) == 0) {
-            return 1;
-        }
-    }
-
-    return 0;
-}
 
 int is_valid_set(char *str, const char *valid_sets[], int num_sets) {
     int i = 0;
@@ -80,10 +67,7 @@ int* validate_read_set(char *str) {
     int* set_members = NULL;
     int set_members_size = 0;
 
-
-    if (!skip_spaces(&str)) {
-      return NULL;
-    }
+    skip_spaces(&str);
 
     if (*str != ',') {
         printf("[Error] No comma after set name\n");
@@ -96,9 +80,7 @@ int* validate_read_set(char *str) {
     /* Loop for comma-separated numbers */
     while (*str != '\0') {
 
-        if (!skip_spaces(&str)) {
-          return NULL;
-        }
+        skip_spaces(&str);
 
         if (*str == '-') {
           str++;
@@ -150,7 +132,7 @@ int* validate_read_set(char *str) {
         }
 
         if (*str == '\0') {
-          printf("[Error] List of set members is not erminated correctly\n");
+          printf("[Error] List of set members is not terminated correctly\n");
           return NULL;
         }
 
@@ -171,6 +153,7 @@ int* validate_read_set(char *str) {
 
     if (seen_ending) {
         /* Check there are no junk values */
+        printf("%c", *str);
         while (*str != '\0') {
             if (!isspace(*str)) {
                 printf("[Error] Junk values after -1\n");
@@ -195,98 +178,290 @@ int* validate_read_set(char *str) {
 }
 
 
-int main(int argc, char *argv[]) {
+void read_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
-    set SETA = {{0}, 0};
-    set SETB = {{0}, 0};
-    set SETC = {{0}, 0};
-    set SETD = {{0}, 0};
-    set SETE = {{0}, 0};
-    set SETF = {{0}, 0};
+    int setIndex;
+    int *setMembers;
+
+    str += strlen("read_set");
+
+    skip_spaces(&str);
+
+    setIndex = is_valid_set(str, valid_sets, AMOUNT_OF_SETS);
+
+
+    if (setIndex == -1) {
+        printf("[Error] Undefined set name\n");
+    }
+
+    str += strlen(valid_sets[setIndex]);
+
+    setMembers = validate_read_set(str);
+
+    if (setMembers != NULL) {
+        read_set(sets[setIndex], setMembers);
+        free(setMembers);
+    }
+
+}
+
+void print_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
     int setIndex;
 
-    const char *valid_sets[] = {
-        "SETA",
-        "SETB",
-        "SETC",
-        "SETD",
-        "SETE",
-        "SETF"
-    };
+    str += strlen("print_set");
+
+    skip_spaces(&str);
 
 
-    const char *valid_commands[] = {
-        "read_set",
-        "print_set",
-        "union_set",
-        "intersect_set",
-        "sub_set",
-        "symdiff_set",
-        "stop"
-    };
+    setIndex = is_valid_set(str, valid_sets, AMOUNT_OF_SETS);
 
-    char* str;
-
-    set* selectedSet;
-
-    while (1) {
-
-        printf("Please enter a command\n");
-
-        str = read_line();
-
-        if (str == NULL) {
-            /* EOF */
-            printf("[Error] Reached EOF\n");
-            continue;
-        }
-
-        if (!skip_spaces(&str)) {
-            printf("[Error] No command found\n");
-            continue;
-        }
-
-
-        if (!is_valid_command(str, valid_commands, 7)) {
-            printf("[Error] Undefined command name\n");
-            continue;
-        }
-
-
-        if (strncmp(str, "read_set", strlen("read_set")) == 0) {
-
-            str += strlen("read_set");
-
-            if (!skip_spaces(&str)) {
-                return 0;
-            }
-
-            setIndex = is_valid_set(str, valid_sets, 6);
-
-
-            if (setIndex == -1) {
-                printf("[Error] Undefined set name\n");
-                return 0;
-            } else if (setIndex == 0) {
-              selectedSet = &SETA;
-            }
-
-            str += 4;
-
-            int* setMembers = validate_read_set(str);
-
-            if (setMembers != NULL) {
-                int i = 0;
-                read_set(selectedSet, setMembers);
-            }
-
-            free(setMembers);
-        } else if (strncmp(str, "print_set", strlen("print_set")) == 0) {
-
-            print_set(&SETA);
-        }
-
+    if (setIndex == -1) {
+        printf("[Error] Undefined set name\n");
+        return;
     }
-    return 0;
+
+    /* Check there is nothing but spaces after that */
+
+    str += strlen(valid_sets[setIndex]);
+
+    while (*str != '\0') {
+        if (!isspace(*str)) {
+            printf("[Error] Junk values after set name\n");
+            return;
+        }
+        str++;
+    }
+
+    print_set(sets[setIndex]);
+
+}
+
+
+int* retrieve_sets_indexes(char *str, const char *valid_sets[]) {
+    int i = 0;
+
+    int *setIndexes = (int*) malloc(3 * sizeof(int));
+
+    for (; i < 2; i++) {
+        skip_spaces(&str);
+
+        setIndexes[i] = is_valid_set(str, valid_sets, AMOUNT_OF_SETS);
+
+        if (setIndexes[i] == -1) {
+            printf("[Error] Undefined set name\n");
+            free(setIndexes);
+            return NULL;
+        }
+
+        str += strlen(valid_sets[setIndexes[i]]);
+
+        skip_spaces(&str);
+
+        if (*str != ',') {
+            printf("[Error] No comma after set name\n");
+            free(setIndexes);
+            return NULL;
+        }
+
+        str++;
+    }
+
+    skip_spaces(&str);
+
+    setIndexes[2] = is_valid_set(str, valid_sets, AMOUNT_OF_SETS);
+
+    if (setIndexes[2] == -1) {
+        printf("[Error] Undefined set name\n");
+        free(setIndexes);
+        return NULL;
+    }
+
+    str += strlen(valid_sets[setIndexes[2]]);
+
+    skip_spaces(&str);
+
+    while (*str != '\0') {
+      if (!isspace(*str)) {
+          printf("[Error] Junk values after set names\n");
+          free(setIndexes);
+          return NULL;
+      }
+      str++;
+    }
+
+    return setIndexes;
+}
+
+void union_set_handler(char *str, const char *valid_sets[], set* sets[]) {
+
+  str += strlen("union_set");
+
+  int *setIndexes = retrieve_sets_indexes(str, valid_sets);
+
+  if (setIndexes == NULL) {
+    return;
+  }
+
+  union_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
+
+  free(setIndexes);
+}
+
+void intersect_set_handler(char *str, const char *valid_sets[], set* sets[]) {
+
+  str += strlen("intersect_set");
+
+  int *setIndexes = retrieve_sets_indexes(str, valid_sets);
+
+  if (setIndexes == NULL) {
+    return;
+  }
+
+  intersect_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
+
+  free(setIndexes);
+}
+
+void sub_set_handler(char *str, const char *valid_sets[], set* sets[]) {
+
+  str += strlen("sub_set");
+
+  int *setIndexes = retrieve_sets_indexes(str, valid_sets);
+
+  if (setIndexes == NULL) {
+    return;
+  }
+
+  sub_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
+
+  free(setIndexes);
+}
+
+void symdiff_set_handler(char *str, const char *valid_sets[], set* sets[]) {
+
+    str += strlen("symdiff_set");
+
+    int *setIndexes = retrieve_sets_indexes(str, valid_sets);
+
+    if (setIndexes == NULL) {
+      return;
+    }
+
+    symdiff_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
+
+    free(setIndexes);
+}
+
+void stop_handler(char *str) {
+  str += strlen("stop");
+
+  /* Check there is nothing but spaces after that */
+
+  while (*str != '\0') {
+      if (!isspace(*str)) {
+          printf("[Error] Junk values after stop\n");
+          return;
+      }
+      str++;
+  }
+
+  stop();
+}
+
+
+
+int main(int argc, char *argv[]) {
+
+  static set SETA = {{0}, 0};
+  static set SETB = {{0}, 0};
+  static set SETC = {{0}, 0};
+  static set SETD = {{0}, 0};
+  static set SETE = {{0}, 0};
+  static set SETF = {{0}, 0};
+
+  const char *valid_sets[] = {
+      "SETA",
+      "SETB",
+      "SETC",
+      "SETD",
+      "SETE",
+      "SETF"
+  };
+
+  set* sets[] = {
+      &SETA,
+      &SETB,
+      &SETC,
+      &SETD,
+      &SETE,
+      &SETF
+  };
+
+
+  const char *valid_commands[] = {
+      "read_set",
+      "print_set",
+      "union_set",
+      "intersect_set",
+      "sub_set",
+      "symdiff_set",
+      "stop"
+  };
+
+
+  const CommandHandler commands_handlers[] = {
+    read_set_handler,
+    print_set_handler,
+    union_set_handler,
+    intersect_set_handler,
+    sub_set_handler,
+    symdiff_set_handler,
+    stop_handler
+  };
+
+
+  char* str;
+
+  int i = 0;
+
+  int command_found = 0;
+
+  int run = 1;
+
+  while (run) {
+
+    printf("Please enter a command\n");
+
+    str = read_line();
+
+    command_found = 0;
+
+    if (!str) {
+      /* EOF */
+      printf("[Error] Reached EOF\n");
+      free(str);
+      run = 0;
+    }
+
+    skip_spaces(&str); /* Skip any whitespaces that we're added before the command name */
+
+    for (i = 0; i < AMOUNT_OF_COMMANDS; i++) {
+      if (strncmp(str, valid_commands[i], strlen(valid_commands[i])) == 0) {
+        command_found = 1;
+        commands_handlers[i](str, valid_sets, sets);
+
+        break;
+      }
+    }
+
+    free(str);
+
+    if (!command_found) {
+      printf("[Error] Undefined command name\n");
+    }
+
+
+  }
+  return 0;
 }

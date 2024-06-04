@@ -19,14 +19,20 @@
 
 #define ARRAY_SIZE 16
 #define BITS_PER_INT 8
+#define AMOUNT_OF_COMMANDS 7
+#define AMOUNT_OF_SETS 6 
 
 struct Set {
   int values[ARRAY_SIZE];
   int size;
 };
 
+
+
+
 typedef struct Set set;
 
+typedef void (*CommandHandler)(char*, const char**, set**);
 
 /*
     Declarations of function that will be implemented in set.c
