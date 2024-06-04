@@ -2,4 +2,3 @@ read_set SETA, 4, 5, 6, -1
 read_set SETB, 1, 2, 3, -1
 union_set SETA, SETB, SETA
 print_set SETA
-stop
