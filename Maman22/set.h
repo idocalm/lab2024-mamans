@@ -37,29 +37,14 @@ typedef struct Set set;
 
 typedef void (*command)(char*, const char**, set**);
 
-/*
-    Declarations of function that will be implemented in set.c
-*/
+/* Function prototypes for command handlers */
 
-/* read_set takes in a set and an array of numbers and sets the set to be the numbers in it */
 void read_set(set* s, int* values);
-
-/* print_set prints the elements of the set in ascending order */
 void print_set(set* s);
-
-/* union_set takes in 3 sets, performs a union of set a with set b, and stores the result in set c */
 void union_set(set* a, set* b, set* c);
-
-/* intersect_set takes in 3 sets, performs an intersection of set a with set b, and stores the result in set c */
 void intersect_set(set* a, set* b, set* c);
-
-/* sub_set takes in 3 sets, performs a subtraction of set a with set b, and stores the result in set c */
 void sub_set(set* a, set* b, set *c);
-
-/* symdiff_set takes in 3 sets, and performs symmetric difference of set a with set b, and stores the result in set c  */
 void symdiff_set(set* a, set* b, set* c);
-
-/* stop takes no operands and stops the program */
 void stop();
 
 #endif

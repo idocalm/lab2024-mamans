@@ -1,10 +1,9 @@
 #include "handlers.h"
-
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+
 
 /*
     read_set_handler takes a string "str", an array of valid sets "valid_sets" and an array of sets "sets".
@@ -37,7 +36,10 @@ void read_set_handler(char *str, const char *valid_sets[], set* sets[]) {
     /* Move the pointer past the set name for further analysis */
     str += strlen(valid_sets[setIndex]);
 
-    /* */
+    /* 
+        Use the retrieve_set_members function to get the members of the future set 
+        Keep in mind that retrieve_set_members DOES check syntax restrictions. 
+    */
     setMembers = retrieve_set_members(str);
 
     if (setMembers != NULL) {
@@ -56,25 +58,28 @@ void read_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 */
 
 void print_set_handler(char *str, const char *valid_sets[], set* sets[]) {
+ 
+    int setIndex; /* The index of the set in the valid_sets array */
 
-    int setIndex;
-
+    /* Move the pointer past the command name for further analysis */
     str += strlen("print_set");
 
+    /* Skip any (valid) whitespaces until the next significant character */
     skip_spaces(&str);
 
-
+    /* Check if the set name arguemnt is valid, and if so - get the index of the set in the valid_sets array */
     setIndex = is_valid_set(str, valid_sets, AMOUNT_OF_SETS);
 
+    /* If setIndex is -1, the set name is not a valid one, we return an error and stop */
     if (setIndex == INVALID_VALUE) {
         fprintf(stderr, "[Error] Undefined set name\n");
         return;
     }
 
-    /* Check there is nothing but spaces after that */
-
+    /* Move the pointer past the set name for further analysis */
     str += strlen(valid_sets[setIndex]);
 
+    /* Check there is nothing but spaces after that */
     while (*str != '\0') {
         if (!isspace(*str)) {
             fprintf(stderr, "[Error] Junk values after set name\n");
@@ -82,6 +87,7 @@ void print_set_handler(char *str, const char *valid_sets[], set* sets[]) {
         }
         str++;
     }
+
 
     print_set(sets[setIndex]);
 
@@ -96,20 +102,23 @@ void print_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 */
 
 void union_set_handler(char *str, const char *valid_sets[], set* sets[]) {
+    int *setIndexes; /* The indexes of the sets in the valid_sets array */
+ 
+    /* Move the pointer past the command name for further analysis */
+    str += strlen("union_set");
 
-  int *setIndexes;
+    /* Use the retrieve_sets_indexes function to get the indexes of the sets in the valid_sets array */
+    setIndexes = retrieve_sets_indexes(str, valid_sets);
 
-  str += strlen("union_set");
+    if (setIndexes == NULL) {
+        return;
+    }
 
-  setIndexes = retrieve_sets_indexes(str, valid_sets);
+    /* Call the union_set function with the appropriate arguments */
+    union_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
 
-  if (setIndexes == NULL) {
-    return;
-  }
-
-  union_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
-
-  free(setIndexes);
+    /* Free the memory allocated for the setIndexes array */
+    free(setIndexes);
 }
 
 /*
@@ -122,19 +131,23 @@ void union_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
 void intersect_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
-  int *setIndexes;
+    int *setIndexes; /* The indexes of the sets in the valid_sets array */
+ 
+    /* Move the pointer past the command name for further analysis */
+    str += strlen("intersect_set");
 
-  str += strlen("intersect_set");
+    /* Use the retrieve_sets_indexes function to get the indexes of the sets in the valid_sets array */
+    setIndexes = retrieve_sets_indexes(str, valid_sets);
 
-  setIndexes = retrieve_sets_indexes(str, valid_sets);
+    if (setIndexes == NULL) {
+        return;
+    }
+    
+    /* Call the intersect_set function with the appropriate arguments */
+    intersect_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
 
-  if (setIndexes == NULL) {
-    return;
-  }
-
-  intersect_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
-
-  free(setIndexes);
+    /* Free the memory allocated for the setIndexes array */
+    free(setIndexes);
 }
 
 /*
@@ -147,19 +160,23 @@ void intersect_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
 void sub_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
-  int *setIndexes;
+    int *setIndexes; /* The indexes of the sets in the valid_sets array */
 
-  str += strlen("sub_set");
+    /* Move the pointer past the command name for further analysis */
+    str += strlen("sub_set");
 
-  setIndexes = retrieve_sets_indexes(str, valid_sets);
+    /* Use the retrieve_sets_indexes function to get the indexes of the sets in the valid_sets array */
+    setIndexes = retrieve_sets_indexes(str, valid_sets);
 
-  if (setIndexes == NULL) {
-    return;
-  }
+    if (setIndexes == NULL) {
+        return;
+    }
 
-  sub_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
+    /* Call the sub_set function with the appropriate arguments */
+    sub_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
 
-  free(setIndexes);
+    /* Free the memory allocated for the setIndexes array */
+    free(setIndexes);
 }
 
 /*
@@ -174,16 +191,20 @@ void symdiff_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 
     int *setIndexes;
 
+    /* Move the pointer past the command name for further analysis */
     str += strlen("symdiff_set");
 
+    /* Use the retrieve_sets_indexes function to get the indexes of the sets in the valid_sets array */
     setIndexes = retrieve_sets_indexes(str, valid_sets);
 
     if (setIndexes == NULL) {
       return;
     }
 
+    /* Call the symdiff_set function with the appropriate arguments */
     symdiff_set(sets[setIndexes[0]], sets[setIndexes[1]], sets[setIndexes[2]]);
 
+    /* Free the memory allocated for the setIndexes array */
     free(setIndexes);
 }
 
@@ -195,17 +216,17 @@ void symdiff_set_handler(char *str, const char *valid_sets[], set* sets[]) {
 */
 
 void stop_handler(char *str) {
-  str += strlen("stop");
+    str += strlen("stop");
 
-  /* Check there is nothing but spaces after that */
+    /* Check there is nothing but spaces after that */
+    while (*str != '\0') {
+        if (!isspace(*str)) {
+            printf("[Error] Junk values after stop\n");
+            return;
+        }
+        str++;
+    }
 
-  while (*str != '\0') {
-      if (!isspace(*str)) {
-          printf("[Error] Junk values after stop\n");
-          return;
-      }
-      str++;
-  }
-
-  stop();
+    /* Call the stop function */
+    stop();
 }

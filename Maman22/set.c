@@ -72,28 +72,35 @@ int count_bits(int num) {
 }
 
 
+/*
+  read_set takes a pointer to a set and an array of integers, and sets the set to contain the integers in the array.
+  The function also adjusts the set size.
+*/
 
 void read_set(set* s , int* values) {
 
-  int i;
+    int i;
 
-  i = 0;
+    i = 0;
 
-  for (; i < ARRAY_SIZE; i++)
-  {
-    s -> values[i] = 0;
-  }
+    for (; i < ARRAY_SIZE; i++) {
+        s -> values[i] = 0;
+    }
 
-  s -> size = 0;
+    s -> size = 0;
 
-  i = 0;
+    i = 0;
 
-  while (values[i] != -1) {
-    set_insert(s, values[i]);
-    i++;
-  }
+    while (values[i] != -1) {
+      set_insert(s, values[i]);
+      i++;
+    }
 
 }
+
+/*
+  print_set takes a pointer to a set and prints the set values in ascending order.
+*/
 
 void print_set(set* s) {
 
@@ -105,13 +112,13 @@ void print_set(set* s) {
   } else {
       i = 0;
 
-
-      printf("-- SET PRINTOUT --\n");
+      printf("--[SET]--\n");
 
       for (; i < ARRAY_SIZE * BITS_PER_INT; i++)
       {
 
         if (set_contains(s, i)) {
+          /* Print a new line every 16 numbers */
           if (counter % ARRAY_SIZE == 0 && counter != 0)
           {
             printf("\n");
@@ -121,16 +128,21 @@ void print_set(set* s) {
         }
       }
 
-      printf("\n-- END OF PRINTOUT --\n");
+      printf("\n--[SET]--\n");
 
   }
 }
+
+/*
+  union_set takes 3 pointers to sets, and performs a union of the first two sets, storing the result in the third set.
+*/
 
 void union_set(set* a, set* b, set* c) {
     int i;
 
     i = 0;
 
+    /* Perform a bitwise OR operation on the values of the two sets */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> values[i] = a -> values[i] | b -> values[i];
@@ -138,17 +150,25 @@ void union_set(set* a, set* b, set* c) {
 
     c -> size = 0;
     i = 0;
+
+    /* Count the amount of numbers in the new set */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> size += count_bits(c -> values[i]);
     }
+
 }
+
+/*
+  intersect_set takes 3 pointers to sets, and performs an intersection of the first two sets, storing the result in the third set.
+*/
 
 void intersect_set(set* a, set* b, set* c) {
     int i;
 
     i = 0;
 
+    /* Perform a bitwise AND operation on the values of the two sets */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> values[i] = a -> values[i] & b -> values[i];
@@ -156,17 +176,24 @@ void intersect_set(set* a, set* b, set* c) {
 
     c -> size = 0;
     i = 0;
+
+    /* Count the amount of numbers in the new set */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> size += count_bits(c -> values[i]);
     }
 }
 
+/*
+  sub_set takes 3 pointers to sets, and performs a subtraction of the second set from the first set, storing the result in the third set.
+*/
+
 void sub_set(set* a, set* b, set* c) {
     int i;
 
     i = 0;
 
+    /* Perform a bitwise AND operation on the values of the two sets, and then negate the result */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> values[i] = a -> values[i] & ~(b -> values[i]);
@@ -174,17 +201,24 @@ void sub_set(set* a, set* b, set* c) {
 
     c -> size = 0;
     i = 0;
+
+    /* Count the amount of numbers in the new set */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> size += count_bits(c -> values[i]);
     }
 }
 
+/*
+  symdiff_set takes 3 pointers to sets, and performs a symmetric difference of the first two sets, storing the result in the third set.
+*/
+
 void symdiff_set(set* a, set* b, set* c) {
     int i;
 
     i = 0;
 
+    /* Perform a bitwise XOR operation on the values of the two sets */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> values[i] = a -> values[i] ^ b -> values[i];
@@ -192,13 +226,19 @@ void symdiff_set(set* a, set* b, set* c) {
 
     c -> size = 0;
     i = 0;
+    
+    /* Count the amount of numbers in the new set */
     for (; i < ARRAY_SIZE; i++)
     {
         c -> size += count_bits(c -> values[i]);
     }
 }
 
+/*
+  stop is a function that stops the program.
+*/
+
 void stop() {
-    printf("Program terminated \n");
+    printf("Program terminated\n");
     exit(0);
 }

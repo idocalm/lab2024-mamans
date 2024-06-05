@@ -53,6 +53,7 @@ int is_valid_set(char *str, const char *valid_sets[], int num_sets) {
 int* retrieve_set_members(char *str) {
 
     int current_num = 0; /* Current number being read */
+    int is_negative = 0; /* Flag to check if the number is negative */
     int seen_ending = 0; /* Flag to check if -1 was seen */
 
     int* set_members = NULL; /* Array to store the future set members */
@@ -77,17 +78,19 @@ int* retrieve_set_members(char *str) {
         /* Skip any (valid) whitespaces until the next significant character */
         skip_spaces(&str);
 
-        /* TODO: Replace -1 mechanics
+        /* Reset the negative flag */
+        is_negative = 0;
+
+
         if (*str == '-') {
+          is_negative = 1;
           str++;
           if (*str == '1') {
+            str++;
             seen_ending = 1;
-          } else {
-            fprintf(stderr, "[Error] Invalid set member - not an integer: %c\n", *str);
-            return NULL;
+            break;
           }
         }
- */
 
         /* If the pointer doesn't point to a digit, the command is illegal. We return an error and stop */
         if (!isdigit(*str)) {
@@ -103,6 +106,10 @@ int* retrieve_set_members(char *str) {
             str++;
         }
 
+        if (is_negative) {
+          current_num *= -1;
+        }
+
         /* Increase the size of the set_members array by one to fit the new number */
         set_members_size++;
         set_members = (int*) realloc(set_members, set_members_size * sizeof(unsigned int));
@@ -116,11 +123,13 @@ int* retrieve_set_members(char *str) {
         /* Add the current number to the set_members array */
         set_members[set_members_size - 1] = current_num;
 
-        /* TODO: More debugging here */
-
-
+        /* 
+            If we reached the end of the number, and there is no comma or a space, the command is illegal. We return an error and stop
+            For instance, if we found a number followed by a letter. 
+        */
+        
         if (*str != ',' && *str != ' ' && *str != '\0') {
-          fprintf(stderr, "[Error] Invalid set member - not an integer (1): %c\n", *str);
+          fprintf(stderr, "[Error] Invalid set member - not an integer");
           return NULL;
         }
 
@@ -152,9 +161,6 @@ int* retrieve_set_members(char *str) {
             str++;
         }
     }
-
-    /* Skip the comma */
-    str++;
 
     /* If -1 was seen, we check for junk values after it */
     if (seen_ending) {
@@ -198,9 +204,10 @@ int* retrieve_set_members(char *str) {
 */
 
 int* retrieve_sets_indexes(char *str, const char *valid_sets[]) {
+
     int i = 0;
 
-    int *setIndexes = (int*) malloc(3 * sizeof(int)); /* Array to store the future set indexes */
+    int *setIndexes = (int*) malloc(SETS_PER_COMMAND * sizeof(int)); /* Array to store the future set indexes */
 
     /* If the allocation failed, we return an error and stop */
     if (!setIndexes) {
@@ -265,12 +272,12 @@ int* retrieve_sets_indexes(char *str, const char *valid_sets[]) {
 
     /* Check there is nothing but spaces after the end (junk values) */
     while (*str != '\0') {
-      if (!isspace(*str)) {
-          fprintf(stderr, "[Error] Extraneous text after end of command\n");
-          free(setIndexes);
-          return NULL;
-      }
-      str++;
+        if (!isspace(*str)) {
+            fprintf(stderr, "[Error] Extraneous text after end of command\n");
+            free(setIndexes);
+            return NULL;
+        }
+        str++;
     }
 
     /* Return the valid and complete indexes of the desired sets. */
